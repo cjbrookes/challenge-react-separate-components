@@ -6,28 +6,24 @@ import { api } from '../services/api';
 
 import '../styles/sidebar.scss';
 
-interface GenreResponseProps {
+export interface GenreResponseProps {
   id: number;
   name: 'action' | 'comedy' | 'documentary' | 'drama' | 'horror' | 'family';
   title: string;
 }
+interface SidebarProps {
+  setSelectedGenreId: (id:number) => void 
+  selectedGenreId: number
+}
 
-export function SideBar() {
-  const [selectedGenreId, setSelectedGenreId] = useState(1);
+export function SideBar({selectedGenreId, setSelectedGenreId}: SidebarProps) {
   const [genres, setGenres] = useState<GenreResponseProps[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<GenreResponseProps>({} as GenreResponseProps);
-
+  
   useEffect(() => {
     api.get<GenreResponseProps[]>('genres').then(response => {
       setGenres(response.data);
     });
   }, []);
-
-  useEffect(() => {
-    api.get<GenreResponseProps>(`genres/${selectedGenreId}`).then(response => {
-      setSelectedGenre(response.data);
-    })
-  }, [selectedGenreId]);
 
   function handleClickButton(id: number) { 
     setSelectedGenreId(id);
